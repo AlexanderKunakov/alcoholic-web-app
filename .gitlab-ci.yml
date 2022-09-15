@@ -1,5 +1,8 @@
 image: openjdk:17.0.2-slim
 
+stages:
+  - build-image
+
 build-image:
   tags:
     - js
