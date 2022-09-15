@@ -1,0 +1,13 @@
+image: openjdk:17.0.2-slim
+
+build-image:
+  tags:
+    - js
+  stage: build-image
+  image: docker:20.10.17-git
+  script:
+    - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
+    - docker build -t $CI_REGISTRY_IMAGE:$CI_PIPELINE_IID .
+    - docker push $CI_REGISTRY_IMAGE:$CI_PIPELINE_IID
+  only:
+    - main
