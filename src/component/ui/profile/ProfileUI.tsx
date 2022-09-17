@@ -5,7 +5,6 @@ import {Logout} from "@mui/icons-material";
 import {useNavigate} from "react-router-dom";
 import {useAppSelector} from "../../../store/hook/Redux";
 import UUIDUtil from "../../../util/UUIDUtil";
-import {ALCOHOLIC_URL} from "../../../util/EnvUtil";
 
 const ProfileUI = () => {
     const {jwt} = useAppSelector(state => state.authReducer);
@@ -48,7 +47,7 @@ const ProfileUI = () => {
                     <Avatar sx={{width: 32, height: 32}} src={
                         UUIDUtil.isNullUUID(jwt!!.context.photoId)
                             ? require("../../../image/stokovyi-chel.jpg")
-                            : `${ALCOHOLIC_URL}/api/alcoholic/image/${jwt!!.context.photoId}`
+                            : `api/alcoholic/image/${jwt!!.context.photoId}`
                     }
                     />
                 </IconButton>

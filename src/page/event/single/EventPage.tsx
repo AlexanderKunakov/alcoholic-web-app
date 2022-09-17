@@ -9,7 +9,6 @@ import EventPageMainTab from "../../../component/ui/event/single/tab/EventPageMa
 import Styles from "./Styles";
 import InvitationLinkButton from "../../../component/ui/button/InvitationLinkButton";
 import Carousel from 'react-material-ui-carousel'
-import {ALCOPARTY_URL} from "../../../util/EnvUtil";
 
 const EventPage = () => {
     const {id} = useParams();
@@ -33,7 +32,7 @@ const EventPage = () => {
                                     {singleEvent.images.map(id => (
                                         <Box component={"img"}
                                              sx={Styles.cardMedia}
-                                             src={`${ALCOPARTY_URL}/api/alcoparty/image/${id}`}
+                                             src={`api/alcoparty/image/${id}`}
                                              alt={singleEvent.event.title}
                                              key={id}
                                         />

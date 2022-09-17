@@ -5,7 +5,6 @@ import {useNavigate} from "react-router-dom";
 import {useAppSelector} from "../../../../../store/hook/Redux";
 import EventButtonResolverUI from "../../button/EventButtonResolverUI";
 import Styles from "./Styles";
-import {ALCOPARTY_URL} from "../../../../../util/EnvUtil";
 
 interface IEventPreview {
     multipleEventResponse: MultipleEventResponse,
@@ -27,7 +26,7 @@ const EventPreviewUI: FC<IEventPreview> = ({multipleEventResponse}) => {
                            component="img"
                            image={
                                multipleEventResponse.image
-                                   ? `${ALCOPARTY_URL}/api/alcoparty/image/${multipleEventResponse.image}`
+                                   ? `api/alcoparty/image/${multipleEventResponse.image}`
                                    : require("../../../../../image/1.jpg")
                            }
                            alt={event.title}
