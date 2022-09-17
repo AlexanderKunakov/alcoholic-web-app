@@ -1,13 +1,13 @@
-import {createApi, fetchBaseQuery} from "@reduxjs/toolkit/dist/query/react";
+import {BaseQueryFn, createApi, FetchArgs, fetchBaseQuery} from "@reduxjs/toolkit/dist/query/react";
 import {AccessTokenDto} from "../../dto/AccessTokenDto";
 import {RootState} from "../Store";
 import {UserCredentialsEntity} from "../../entity/UserCredentialsEntity";
-import {ALCOHOLIC_URL} from "../../util/EnvUtil";
+import {ErrorDto} from "../../dto/ErrorDto";
 
 export const authApi = createApi({
     reducerPath: "auth",
     baseQuery: fetchBaseQuery({
-        baseUrl: `${ALCOHOLIC_URL}/api/alcoholic`,
+        baseUrl: `api/alcoholic`,
         credentials: "include",
         prepareHeaders: (headers, {getState}) => {
             const token = (getState() as RootState).authReducer.token
@@ -17,8 +17,8 @@ export const authApi = createApi({
             }
 
             return headers
-        }
-    }),
+        },
+    }) as unknown as BaseQueryFn<string | FetchArgs, unknown, ErrorDto>,
     tagTypes: ["Auth"],
     endpoints: (build) => ({
         register: build.mutation<void, FormData>({
