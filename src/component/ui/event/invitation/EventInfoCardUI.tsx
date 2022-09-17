@@ -2,7 +2,6 @@ import React, {FC} from 'react';
 import {Box, Button, Card, CardActions, CardContent, CardMedia, Typography} from "@mui/material";
 import {epochToDate} from "../../../../util/DateUtil";
 import {SingleEventResponse} from "../../../../dto/reponse/SingleEventResponse";
-import {ALCOPARTY_URL} from "../../../../util/EnvUtil";
 
 interface IEventInfoCardUI {
     event: SingleEventResponse,
@@ -16,7 +15,7 @@ const EventInfoCardUI: FC<IEventInfoCardUI> = ({event, buttonText, onClick}) => 
             <CardMedia component="img"
                        image={
                            event.images.length > 0
-                               ? `${ALCOPARTY_URL}/api/alcoparty/image/${event.images[0]}`
+                               ? `api/alcoparty/image/${event.images[0]}`
                                : require("../../../../image/1.jpg")
                        }
                        alt={event.event.title}

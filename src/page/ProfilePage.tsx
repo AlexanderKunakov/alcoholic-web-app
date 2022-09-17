@@ -3,7 +3,6 @@ import {Card, CardMedia, Container, Grid} from "@mui/material";
 import ProfileMainTabUI from "../component/ui/profile/tab/ProfileMainTabUI";
 import {useLazyGetOwnInfoQuery} from "../store/api/UserApi";
 import LoaderUI from "../component/ui/LoaderUI";
-import {ALCOHOLIC_URL, ALCOPARTY_URL} from "../util/EnvUtil";
 
 const ProfilePage = () => {
     const [getOwnInfo, {data: user, isFetching}] = useLazyGetOwnInfoQuery();
@@ -31,7 +30,7 @@ const ProfilePage = () => {
                         <CardMedia component="img"
                                    sx={{objectFit: "cover", height: "25rem", width: "100%"}}
                                    image={user.photoId
-                                       ? `${ALCOHOLIC_URL}/api/alcoholic/image/${user.photoId}`
+                                       ? `api/alcoholic/image/${user.photoId}`
                                        : require("../image/1.jpg")}
                                    alt={"Profile"}
                         />

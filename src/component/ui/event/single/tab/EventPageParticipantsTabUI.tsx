@@ -13,11 +13,12 @@ const EventPageParticipantsTabUI: FC<IEventPageParticipantsTabUI> = ({participan
     const [getUser] = useLazyGetUserByIdQuery();
 
     useEffect(() => {
+        setUsers([]);
         participants.map(p => getUser(p)
             .unwrap()
             .then(res => setUsers(prev => [...prev, `${res.firstname}  ${res.lastName}`]))
         )
-    }, []);
+    }, [participants]);
 
     return (
         <TabPanel value={"1"}>
