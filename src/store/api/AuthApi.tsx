@@ -7,7 +7,7 @@ import {ALCOHOLIC_URL} from "../../util/EnvUtil";
 export const authApi = createApi({
     reducerPath: "auth",
     baseQuery: fetchBaseQuery({
-        baseUrl: `${ALCOHOLIC_URL}/api`,
+        baseUrl: `${ALCOHOLIC_URL}/api/alcoholic`,
         credentials: "include",
         prepareHeaders: (headers, {getState}) => {
             const token = (getState() as RootState).authReducer.token
