@@ -7,11 +7,12 @@ import {SingleEventResponse} from "../../dto/reponse/SingleEventResponse";
 import {IdResponse} from "../../dto/reponse/IdResponse";
 import {PaginationResponse} from "../../dto/reponse/PaginationResponse";
 import {PaginationParamModel} from "../../model/PaginationParamModel";
+import {ALCOPARTY_URL} from "../../util/EnvUtil";
 
 export const eventApi = createApi({
     reducerPath: "event",
     baseQuery: fetchBaseQuery({
-        baseUrl: `api/alcoparty/event`,
+        baseUrl: `${ALCOPARTY_URL}/api/alcoparty/event`,
         prepareHeaders: (headers, {getState}) => {
             const token = (getState() as RootState).authReducer.token
 

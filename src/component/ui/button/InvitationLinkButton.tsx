@@ -4,6 +4,7 @@ import AddIcon from '@mui/icons-material/Add';
 import {useCreateLinkMutation} from "../../../store/api/InvitationLinkApi";
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import ClearIcon from '@mui/icons-material/Clear';
+import {HOSTNAME} from "../../../util/EnvUtil";
 
 interface IInvitationLinkButton {
     eventId: string,
@@ -18,7 +19,7 @@ const InvitationLinkButton: FC<IInvitationLinkButton> = ({eventId}) => {
         createLink(eventId).unwrap()
             .then(res => {
                 if (res.id) {
-                    const linkUrl = `event/invite/${res.id}`;
+                    const linkUrl = `${HOSTNAME}/event/invite/${res.id}`;
                     setInvitationLink(linkUrl);
                     navigator.clipboard.writeText(linkUrl)
                         .then(() => setOpen(true));

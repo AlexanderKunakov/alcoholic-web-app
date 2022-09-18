@@ -3,11 +3,12 @@ import {AccessTokenDto} from "../../dto/AccessTokenDto";
 import {RootState} from "../Store";
 import {UserCredentialsEntity} from "../../entity/UserCredentialsEntity";
 import {ErrorDto} from "../../dto/ErrorDto";
+import {ALCOHOLIC_URL} from "../../util/EnvUtil";
 
 export const authApi = createApi({
     reducerPath: "auth",
     baseQuery: fetchBaseQuery({
-        baseUrl: `api/alcoholic`,
+        baseUrl: `${ALCOHOLIC_URL}/api/alcoholic`,
         credentials: "include",
         prepareHeaders: (headers, {getState}) => {
             const token = (getState() as RootState).authReducer.token

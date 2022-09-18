@@ -2,11 +2,12 @@ import React from 'react';
 import {createApi, fetchBaseQuery} from "@reduxjs/toolkit/dist/query/react";
 import {RootState} from "../Store";
 import {IdResponse} from "../../dto/reponse/IdResponse";
+import {ALCOPARTY_URL} from "../../util/EnvUtil";
 
 export const invitationLinkApi = createApi({
     reducerPath: "invitationLink",
     baseQuery: fetchBaseQuery({
-        baseUrl: `api/alcoparty/link`,
+        baseUrl: `${ALCOPARTY_URL}/api/alcoparty/link`,
         prepareHeaders: (headers, {getState}) => {
             const token = (getState() as RootState).authReducer.token
 
