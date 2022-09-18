@@ -12,3 +12,5 @@ export function epochToRuDate(epoch: number): string {
         }
     )
 }
+
+export const yyyymmddthhMm = "YYYY-MM-DDTHH:mm";

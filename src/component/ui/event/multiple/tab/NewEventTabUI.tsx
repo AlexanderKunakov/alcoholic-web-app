@@ -1,80 +1,41 @@
 import React, {FC, ReactNode, useState} from 'react';
 import {TabPanel} from "@mui/lab";
 import {Box, Button, Grid, ImageList, ImageListItem, OutlinedInput, Stack, TextField, Typography} from "@mui/material";
-import {EventType} from "../../../../../dto/EventType";
 import {LocalizationProvider} from "@mui/x-date-pickers";
 import {AdapterDateFns} from "@mui/x-date-pickers/AdapterDateFns";
 import {usePostEventMutation} from "../../../../../store/api/EventApi";
 import PhotoButtonUI from "../../../util/PhotoButtonUI";
-import ErrorAlertUI from "../../../util/ErrorAlertUI";
-import SuccessAlertUI from "../../../util/SuccessAlertUI";
 import {useNavigate} from "react-router-dom";
-import * as yup from "yup";
 import {Controller, useForm} from "react-hook-form";
 import {yupResolver} from "@hookform/resolvers/yup";
 import ToolTipUI from "../../../util/tooltip/ToolTipUI";
+import NewEventTabValidation, {NewEventTabInputs} from "../../../../../validation/NewEventTabValidation";
 import {EventEntity} from "../../../../../entity/EventEntity";
-
-type Inputs = {
-    title: string,
-    info: string,
-    type: EventType,
-    location: string,
-    startDate: Date,
-    endDate: Date,
-    alcoholicsIds: string[],
-}
-
-const schema = yup.object({
-    title: yup.string()
-        .required("Title is required")
-        .max(50, "Title must be less than or equal to 50")
-        .trim(),
-    info: yup.string()
-        .required("Information is required")
-        .max(1000, "Information must be less than or equal to 1000")
-        .trim(),
-    location: yup.string()
-        .required("Location is required")
-        .max(200, "Location must be less than or equal to 200")
-        .trim(),
-    startDate: yup.date()
-        .required("Date is required")
-        .min(new Date(), "Event Start Date must be after current date and time")
-        .max(
-            yup.ref("endDate"),
-            "Event Start Date must be before Event End Date"
-        ),
-    endDate: yup.date()
-        .required("Date is required")
-        .min(
-            yup.ref("startDate"),
-            "Event End Date must be after Event Start Date"
-        ),
-});
 
 const NewEventTabUI = () => {
     const navigate = useNavigate();
     const formData = new FormData();
     const [blobs, setBlobs] = useState<Blob[]>([]);
-    const [saveEvent, {isSuccess, isError}] = usePostEventMutation();
-    const {control, handleSubmit, formState: {errors}} = useForm<Inputs>({
+    const [saveEvent] = usePostEventMutation();
+    const {control, handleSubmit, formState: {errors}} = useForm<NewEventTabInputs>({
         mode: "all",
-        resolver: yupResolver(schema),
+        resolver: yupResolver(NewEventTabValidation.schema),
+        defaultValues: NewEventTabValidation.defaultValues,
     });
 
     //todo rafactor datepickers validation when smarter
-    function onSubmit({alcoholicsIds, endDate, info, location, startDate, title, type}: Inputs) {
-        const event = {
-            title: title,
-            info: info,
-            type: type ? type : EventType.PUBLIC,
-            location: location,
-            startDate: startDate.valueOf(),
-            endDate: endDate.valueOf(),
-            alcoholicsIds: alcoholicsIds ? alcoholicsIds : [],
-        } as EventEntity
-        formData.append("event", new Blob([JSON.stringify(event)], {type: 'application/json'}));
+    function onSubmit(data: NewEventTabInputs) {
+        formData.append("event",
+            new Blob([JSON.stringify({
+                    title: data.title,
+                    info: data.info,
+                    location: data.location,
+                    type: data.type,
+                    startDate: Date.parse(data.startDate),
+                    endDate: Date.parse(data.endDate),
+                    alcoholicsIds: data.alcoholicsIds,
+                } as EventEntity)],
+                {type: 'application/json'}));
         blobs.map(blob => formData.append("images", blob));
         saveEvent(formData)
             .then((res) => {
@@ -107,20 +68,13 @@ const NewEventTabUI = () => {
                       position: "relative",
                       padding: 0
                   }}>
-            {isSuccess && <SuccessAlertUI message={"Event successfully created!"}/>}
-            {isError && <ErrorAlertUI message={"Error creating event!"}/>}
             <Box component={"form"} onSubmit={handleSubmit(onSubmit)}>
                 <Grid container spacing={3}>
                     <Grid item md={6}>
                         <EventFormContainer>
                             <Typography variant={"h6"}>Select Event Dates</Typography>
                             <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                <Stack sx={{
-                                    display: "flex",
-                                    flexDirection: "row",
-                                    justifyContent: "space-between",
-                                    width: "100%"
-                                }}>
+                                <Stack direction={"row"} justifyContent="space-between" width={"100%"}>
                                     <Controller name={"startDate"}
                                                 control={control}
                                                 render={({field}) =>
@@ -133,6 +87,7 @@ const NewEventTabUI = () => {
                                                             sx={{width: "47%"}}
                                                             InputLabelProps={{shrink: true}}
                                                             {...field}
+                                                            error={!!errors.startDate}
                                                         />
                                                     </ToolTipUI>
                                                 }
@@ -149,6 +104,7 @@ const NewEventTabUI = () => {
                                                             sx={{width: "47%"}}
                                                             InputLabelProps={{shrink: true}}
                                                             {...field}
+                                                            error={!!errors.endDate}
                                                         />
                                                     </ToolTipUI>
                                                 }
@@ -166,6 +122,7 @@ const NewEventTabUI = () => {
                                                                placeholder={"Title"}
                                                                fullWidth
                                                                {...field}
+                                                               error={!!errors.title}
                                                 />
                                             </ToolTipUI>
                                         }
@@ -178,6 +135,7 @@ const NewEventTabUI = () => {
                                                                placeholder={"Information"}
                                                                fullWidth
                                                                {...field}
+                                                               error={!!errors.info}
                                                 />
                                             </ToolTipUI>
                                         }
@@ -190,6 +148,7 @@ const NewEventTabUI = () => {
                                                                placeholder={"Location"}
                                                                fullWidth
                                                                {...field}
+                                                               error={!!errors.location}
                                                 />
                                             </ToolTipUI>
                                         }
