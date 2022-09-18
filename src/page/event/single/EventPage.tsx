@@ -33,7 +33,7 @@ const EventPage = () => {
                                     {singleEvent.images.map(id => (
                                         <Box component={"img"}
                                              sx={Styles.cardMedia}
-                                             src={`${ALCOPARTY_URL}api/alcoparty/image/${id}`}
+                                             src={`${ALCOPARTY_URL}/api/alcoparty/image/${id}`}
                                              alt={singleEvent.event.title}
                                              key={id}
                                         />
