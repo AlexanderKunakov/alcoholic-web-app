@@ -10,7 +10,7 @@ build-image:
   image: docker:20.10.17-git
   script:
     - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
-    - docker build -t $CI_REGISTRY_IMAGE:$CI_PIPELINE_IID .
+    - docker build --build-arg ALCOHOLIC_HOST --build-arg ALCOHOLIC_PORT --build-arg ALCOPARTY_HOST --build-arg ALCOPARTY_PORT -t $CI_REGISTRY_IMAGE:$CI_PIPELINE_IID .
     - docker push $CI_REGISTRY_IMAGE:$CI_PIPELINE_IID
   only:
     - main
