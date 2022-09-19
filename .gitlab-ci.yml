@@ -19,7 +19,7 @@ build-image:
 kuber-dev:
   stage: deploy
   trigger:
-    project: /buhinder/alco-env
+    project: buhinder/alco-env
     branch: main
   variables:
     APPLICATION_BRANCH: $CI_COMMIT_REF_NAME
