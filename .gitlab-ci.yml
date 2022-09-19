@@ -2,6 +2,7 @@ image: openjdk:17.0.2-slim
 
 stages:
   - build-image
+  - deploy
 
 build-image:
   tags:
@@ -14,3 +15,18 @@ build-image:
     - docker push $CI_REGISTRY_IMAGE:$CI_PIPELINE_IID
   only:
     - main
+
+kuber-dev:
+  stage: deploy
+  trigger:
+    project: /buhinder/alco-env
+    branch: main
+  variables:
+    APPLICATION_BRANCH: $CI_COMMIT_REF_NAME
+    APPLICATION_VERSION: $CI_PIPELINE_IID
+    SERVICE_NAME: $CI_PROJECT_NAME
+  allow_failure: true
+  only:
+    - dev
+    - main
+
