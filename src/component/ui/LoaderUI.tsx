@@ -4,8 +4,9 @@ import {Box, CircularProgress} from "@mui/material";
 const LoaderUI = () => {
     return (
         <Box sx={{
+            flex: "1 0 auto",
             display: "flex",
-            height: "100vh",
+            flexDirection: "row",
             justifyContent: "center",
             alignItems: "center"
         }}>

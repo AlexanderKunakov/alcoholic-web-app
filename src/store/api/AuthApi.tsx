@@ -1,8 +1,7 @@
-import {BaseQueryFn, createApi, FetchArgs, fetchBaseQuery} from "@reduxjs/toolkit/dist/query/react";
+import {createApi, fetchBaseQuery} from "@reduxjs/toolkit/dist/query/react";
 import {AccessTokenDto} from "../../dto/AccessTokenDto";
 import {RootState} from "../Store";
 import {UserCredentialsEntity} from "../../entity/UserCredentialsEntity";
-import {ErrorDto} from "../../dto/ErrorDto";
 import {ALCOHOLIC_URL} from "../../util/EnvUtil";
 
 export const authApi = createApi({
@@ -19,7 +18,7 @@ export const authApi = createApi({
 
             return headers
         },
-    }) as unknown as BaseQueryFn<string | FetchArgs, unknown, ErrorDto>,
+    }),
     tagTypes: ["Auth"],
     endpoints: (build) => ({
         register: build.mutation<void, FormData>({

@@ -25,7 +25,7 @@ export const authSlice = createSlice({
             authApi.endpoints.login.matchFulfilled,
             (state, action: PayloadAction<AccessTokenDto>) => {
                 state.token = action.payload.accessToken;
-                state.jwt = jwtDecode(state.token) as JwtModel;
+                state.jwt = jwtDecode(state.token);
                 localStorage.setItem(persist, persist);
             }
         );
@@ -40,7 +40,7 @@ export const authSlice = createSlice({
             authApi.endpoints.refresh.matchFulfilled,
             (state, action: PayloadAction<AccessTokenDto>) => {
                 state.token = action.payload.accessToken;
-                state.jwt = jwtDecode(state.token) as JwtModel;
+                state.jwt = jwtDecode(state.token);
             }
         );
     }

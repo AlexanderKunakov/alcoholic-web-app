@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import {Avatar, Box, Divider, IconButton, ListItemIcon, Menu, MenuItem, Typography} from "@mui/material";
 import {useLogoutMutation} from "../../../store/api/AuthApi";
 import {Logout} from "@mui/icons-material";
@@ -10,7 +10,7 @@ import {ALCOHOLIC_URL} from "../../../util/EnvUtil";
 const ProfileUI = () => {
     const {jwt} = useAppSelector(state => state.authReducer);
     const navigate = useNavigate();
-    const [logout] = useLogoutMutation();
+    const [logout, {error, isError, isSuccess}] = useLogoutMutation();
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
 
@@ -23,9 +23,14 @@ const ProfileUI = () => {
     }
 
     function handleLogout() {
-        logout()
-            .then(() => navigate("/login", {replace: true}));
+        logout();
     }
+
+    useEffect(() => {
+        if (isSuccess) {
+            navigate("/login", {replace: true});
+        }
+    }, [isSuccess])
 
     return (
         <>
@@ -90,7 +95,7 @@ const ProfileUI = () => {
                 transformOrigin={{horizontal: "right", vertical: "top"}}
                 anchorOrigin={{horizontal: "right", vertical: "bottom"}}
             >
-                <MenuItem onClick={() => navigate("/profile")}>
+                <MenuItem component={"a"} href={"/profile"} target={"_blank"}>
                     <Avatar/> Profile
                 </MenuItem>
                 <Divider/>

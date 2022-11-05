@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Button, ButtonGroup} from "@mui/material";
 import {useDisbandEventMutation, useJoinEventMutation, useLeaveEventMutation} from "../../../../store/api/EventApi";
 import {useNavigate} from "react-router-dom";
@@ -14,7 +14,7 @@ const EventButtonResolverUI = ({eventId, isOwner, isParticipant, fullWidth}: IEv
     const navigate = useNavigate();
     const [joinEvent] = useJoinEventMutation();
     const [leaveEvent] = useLeaveEventMutation();
-    const [disband] = useDisbandEventMutation();
+    const [disband, {isSuccess: isDisbandSuccess,}] = useDisbandEventMutation();
 
     function onJoin() {
         joinEvent(eventId);
@@ -25,15 +25,14 @@ const EventButtonResolverUI = ({eventId, isOwner, isParticipant, fullWidth}: IEv
     }
 
     function onDisband() {
-        disband(eventId)
-            .then(res => {
-                //@ts-ignore
-                //todo BUH-37
-                if (res.data === null) {
-                    navigate("/", {replace: true});
-                }
-            });
+        disband(eventId);
     }
+
+    useEffect(() => {
+        if (isDisbandSuccess) {
+            navigate("/", {replace: true});
+        }
+    }, []);
 
     return (
         <ButtonGroup variant={"outlined"} fullWidth={fullWidth}>

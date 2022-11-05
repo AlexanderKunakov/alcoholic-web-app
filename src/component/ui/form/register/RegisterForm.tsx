@@ -1,6 +1,5 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useRegisterMutation} from "../../../../store/api/AuthApi";
-import {UserEntity} from "../../../../entity/UserEntity";
 import {
     Avatar,
     Box,
@@ -67,25 +66,18 @@ const RegisterForm = () => {
     const formData = new FormData();
     const [userImage, setUserImage] = useState<Blob | null>(null);
     const [isVisible, setIsVisible] = useState<boolean>(false);
-    const [register, {isLoading}] = useRegisterMutation();
+    const [register, {isLoading, error, isSuccess}] = useRegisterMutation();
     const {control, handleSubmit, formState: {errors}} = useForm<Inputs>({
-        mode: "onChange",
+        mode: "all",
         resolver: yupResolver(schema),
     });
 
-    function onSubmit(data: UserEntity) {
+    function onSubmit(data: Inputs) {
         formData.append("user", new Blob([JSON.stringify(data)], {type: 'application/json'}));
         if (userImage) {
             formData.append("image", userImage);
         }
-        register(formData)
-            .then(res => {
-                //todo FT-37
-                // @ts-ignore
-                if (res.data === null) {
-                    navigate("/login", {replace: true});
-                }
-            });
+        register(formData);
     }
 
     function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -100,152 +92,157 @@ const RegisterForm = () => {
         e.target.value = null
     }
 
+    useEffect(() => {
+        if (isSuccess) {
+            navigate("/login", {replace: true});
+        }
+    }, [isSuccess]);
+
     return (
-        <>
-            <Container maxWidth={"xs"}>
-                <CssBaseline/>
-                <Box sx={Styles.box}>
-                    {userImage === null
-                        ? <Avatar sx={Styles.avatar}>
-                            <AppRegistrationIcon/>
-                        </Avatar>
-                        : <Avatar
-                            src={URL.createObjectURL(userImage)}
-                            sx={Styles.photo}
-                        />
-                    }
-                    <Typography sx={Styles.signUp} variant={"h5"}>Sign Up</Typography>
-                    <Box component={"form"}
-                         onSubmit={handleSubmit(onSubmit)}
-                         sx={Styles.form}>
-                        <Controller name={"firstname"}
-                                    control={control}
-                                    defaultValue={""}
-                                    render={({field}) =>
-                                        <ToolTipUI title={(errors.firstname?.message || "")}>
-                                            <OutlinedInput type={"text"}
-                                                           placeholder={"First Name"}
-                                                           fullWidth
-                                                           {...field}
-                                            />
-                                        </ToolTipUI>
-                                    }
-                        />
-                        <Controller name={"lastName"}
-                                    control={control}
-                                    defaultValue={""}
-                                    render={({field}) =>
-                                        <ToolTipUI title={(errors.lastName?.message || "")}>
-                                            <OutlinedInput type={"text"}
-                                                           placeholder={"Last Name"}
-                                                           fullWidth
-                                                           {...field}
-                                            />
-                                        </ToolTipUI>
-                                    }
-                        />
-                        <Controller name={"age"}
-                                    control={control}
-                                    render={({field}) =>
-                                        <ToolTipUI title={(errors.age?.message || "")}>
-                                            <OutlinedInput type={"number"}
-                                                           placeholder={"Age"}
-                                                           fullWidth
-                                                           {...field}
-                                            />
-                                        </ToolTipUI>
-                                    }
-                        />
-                        <Controller name={"email"}
-                                    control={control}
-                                    defaultValue={""}
-                                    render={({field}) =>
-                                        <ToolTipUI title={(errors.email?.message || "")}>
-                                            <OutlinedInput type={"text"}
-                                                           placeholder={"Email"}
-                                                           fullWidth
-                                                           {...field}
-                                            />
-                                        </ToolTipUI>
-                                    }
-                        />
-                        <Controller name={"login"}
-                                    control={control}
-                                    defaultValue={""}
-                                    render={({field}) =>
-                                        <ToolTipUI title={(errors.login?.message || "")}>
-                                            <OutlinedInput type={"text"}
-                                                           placeholder={"Login"}
-                                                           fullWidth
-                                                           {...field}
-                                            />
-                                        </ToolTipUI>
-                                    }
-                        />
-                        <Controller name={"password"}
-                                    control={control}
-                                    defaultValue={""}
-                                    render={({field}) =>
-                                        <ToolTipUI title={(errors.password?.message || "")}>
-                                            <OutlinedInput type={isVisible ? 'text' : 'password'}
-                                                           placeholder={"Password"}
-                                                           fullWidth
-                                                           endAdornment={
-                                                               <InputAdornment position="end">
-                                                                   <IconButton
-                                                                       disabled={isLoading}
-                                                                       aria-label={"toggle password visibility"}
-                                                                       onClick={() => setIsVisible(!isVisible)}
-                                                                       onMouseDown={e => e.preventDefault()}
-                                                                       edge={"end"}
-                                                                   >
-                                                                       {isVisible ? <VisibilityOff/> : <Visibility/>}
-                                                                   </IconButton>
-                                                               </InputAdornment>
-                                                           }
-                                                           {...field}
-                                            />
-                                        </ToolTipUI>
-                                    }
-                        />
-                        <Box sx={Styles.photoButton}>
-                            <Button component={"label"}
-                                    startIcon={<PortraitIcon/>}
-                                    variant={"outlined"}
-                                    size={"large"}
-                                    fullWidth
-                            >
-                                {userImage === null ? "Attach Photo" : "Change Photo"}
-                                <input type="file" accept="image/jpeg" hidden onChange={e => handleImageChange(e)}
-                                       onClick={e => handleImageClick(e)}/>
-                            </Button>
-                            {userImage !== null &&
-                                <IconButton sx={Styles.delete} onClick={() => setUserImage(null)}>
-                                    <DeleteIcon/>
-                                </IconButton>
-                            }
-                        </Box>
-                        <LoadingButton
-                            loading={isLoading}
-                            type={"submit"}
-                            fullWidth
-                            variant={"contained"}
-                            sx={Styles.submit}
-                            size={"large"}
+        <Container maxWidth={"xs"}>
+            <CssBaseline/>
+            <Box sx={Styles.box}>
+                {userImage === null
+                    ? <Avatar sx={Styles.avatar}>
+                        <AppRegistrationIcon/>
+                    </Avatar>
+                    : <Avatar
+                        src={URL.createObjectURL(userImage)}
+                        sx={Styles.photo}
+                    />
+                }
+                <Typography sx={Styles.signUp} variant={"h5"}>Sign Up</Typography>
+                <Box component={"form"}
+                     onSubmit={handleSubmit(onSubmit)}
+                     sx={Styles.form}>
+                    <Controller name={"firstname"}
+                                control={control}
+                                defaultValue={""}
+                                render={({field}) =>
+                                    <ToolTipUI title={(errors.firstname?.message || "")}>
+                                        <OutlinedInput type={"text"}
+                                                       placeholder={"First Name"}
+                                                       fullWidth
+                                                       {...field}
+                                        />
+                                    </ToolTipUI>
+                                }
+                    />
+                    <Controller name={"lastName"}
+                                control={control}
+                                defaultValue={""}
+                                render={({field}) =>
+                                    <ToolTipUI title={(errors.lastName?.message || "")}>
+                                        <OutlinedInput type={"text"}
+                                                       placeholder={"Last Name"}
+                                                       fullWidth
+                                                       {...field}
+                                        />
+                                    </ToolTipUI>
+                                }
+                    />
+                    <Controller name={"age"}
+                                control={control}
+                                render={({field}) =>
+                                    <ToolTipUI title={(errors.age?.message || "")}>
+                                        <OutlinedInput type={"number"}
+                                                       placeholder={"Age"}
+                                                       fullWidth
+                                                       {...field}
+                                        />
+                                    </ToolTipUI>
+                                }
+                    />
+                    <Controller name={"email"}
+                                control={control}
+                                defaultValue={""}
+                                render={({field}) =>
+                                    <ToolTipUI title={(errors.email?.message || "")}>
+                                        <OutlinedInput type={"text"}
+                                                       placeholder={"Email"}
+                                                       fullWidth
+                                                       {...field}
+                                        />
+                                    </ToolTipUI>
+                                }
+                    />
+                    <Controller name={"login"}
+                                control={control}
+                                defaultValue={""}
+                                render={({field}) =>
+                                    <ToolTipUI title={(errors.login?.message || "")}>
+                                        <OutlinedInput type={"text"}
+                                                       placeholder={"Login"}
+                                                       fullWidth
+                                                       {...field}
+                                        />
+                                    </ToolTipUI>
+                                }
+                    />
+                    <Controller name={"password"}
+                                control={control}
+                                defaultValue={""}
+                                render={({field}) =>
+                                    <ToolTipUI title={(errors.password?.message || "")}>
+                                        <OutlinedInput type={isVisible ? 'text' : 'password'}
+                                                       placeholder={"Password"}
+                                                       fullWidth
+                                                       endAdornment={
+                                                           <InputAdornment position="end">
+                                                               <IconButton
+                                                                   disabled={isLoading}
+                                                                   aria-label={"toggle password visibility"}
+                                                                   onClick={() => setIsVisible(!isVisible)}
+                                                                   onMouseDown={e => e.preventDefault()}
+                                                                   edge={"end"}
+                                                               >
+                                                                   {isVisible ? <VisibilityOff/> :
+                                                                       <Visibility/>}
+                                                               </IconButton>
+                                                           </InputAdornment>
+                                                       }
+                                                       {...field}
+                                        />
+                                    </ToolTipUI>
+                                }
+                    />
+                    <Box sx={Styles.photoButton}>
+                        <Button component={"label"}
+                                startIcon={<PortraitIcon/>}
+                                variant={"outlined"}
+                                size={"large"}
+                                fullWidth
                         >
-                            Sign Up
-                        </LoadingButton>
+                            {userImage === null ? "Attach Photo" : "Change Photo"}
+                            <input type="file" accept="image/jpeg" hidden onChange={e => handleImageChange(e)}
+                                   onClick={e => handleImageClick(e)}/>
+                        </Button>
+                        {userImage !== null &&
+                            <IconButton sx={Styles.delete} onClick={() => setUserImage(null)}>
+                                <DeleteIcon/>
+                            </IconButton>
+                        }
                     </Box>
-                    <Grid container sx={Styles.login}>
-                        <Grid item>
-                            <Link to={"/login"}>
-                                {"Already have an account? Sign In"}
-                            </Link>
-                        </Grid>
-                    </Grid>
+                    <LoadingButton
+                        loading={isLoading}
+                        type={"submit"}
+                        fullWidth
+                        variant={"contained"}
+                        sx={Styles.submit}
+                        size={"large"}
+                    >
+                        Sign Up
+                    </LoadingButton>
                 </Box>
-            </Container>
-        </>
+                <Grid container sx={Styles.login}>
+                    <Grid item>
+                        <Link to={"/login"}>
+                            {"Already have an account? Sign In"}
+                        </Link>
+                    </Grid>
+                </Grid>
+            </Box>
+        </Container>
     );
 };
 

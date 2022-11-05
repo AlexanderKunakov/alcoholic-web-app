@@ -1,5 +1,5 @@
-import React, {FC, ReactElement, useState} from 'react';
-import {ClickAwayListener, Tooltip} from "@mui/material";
+import React, {FC, ReactElement} from 'react';
+import {Tooltip} from "@mui/material";
 import Styles from "./Styles";
 
 interface IToolTipUI {
@@ -21,21 +21,19 @@ interface IToolTipUI {
 
 const ToolTipUI: FC<IToolTipUI> = ({children, title, placement = "right"}) => {
     return (
-        <ClickAwayListener onClickAway={() => {}}>
-            <Tooltip PopperProps={{disablePortal: true}}
-                     placement={placement}
-                     disableFocusListener
-                     disableHoverListener
-                     disableTouchListener
-                     disableInteractive
-                     title={title}
-                     arrow
-                     open
-                     componentsProps={{tooltip: {sx: Styles.tooltip}}}
-            >
-                {children}
-            </Tooltip>
-        </ClickAwayListener>
+        <Tooltip PopperProps={{disablePortal: true}}
+                 placement={placement}
+                 disableFocusListener
+                 disableHoverListener
+                 disableTouchListener
+                 disableInteractive
+                 title={title}
+                 arrow
+                 open
+                 componentsProps={{tooltip: {sx: Styles.tooltip}}}
+        >
+            {children}
+        </Tooltip>
     );
 };
 

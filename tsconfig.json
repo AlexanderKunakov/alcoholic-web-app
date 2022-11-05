@@ -5,7 +5,7 @@
         "./node_modules/@mui/styled-engine-sc"
       ]
     },
-    "t,arget": "es6",
+    "target": "es6",
     "lib": [
       "es5",
       "dom",

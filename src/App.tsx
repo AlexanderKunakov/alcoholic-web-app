@@ -12,10 +12,12 @@ import PersistAuthComponent from "./component/auth/PersistAuthComponent";
 import EventPage from "./page/event/single/EventPage";
 import NotFoundPage from "./page/NotFoundPage";
 import EventInvitationPreviewPage from "./page/event/invitation/EventInvitationPreviewPage";
+import AlertsStackUI from "./component/ui/util/AlertsStackUI";
 
 function App() {
     return (
         <div className={as.app}>
+            <AlertsStackUI/>
             <PersistAuthComponent>
                 <Routes>
                     <Route element={

@@ -1,5 +1,5 @@
 import React from 'react';
-import {createApi, fetchBaseQuery} from "@reduxjs/toolkit/dist/query/react";
+import {BaseQueryFn, createApi, FetchArgs, fetchBaseQuery} from "@reduxjs/toolkit/dist/query/react";
 import {RootState} from "../Store";
 import {MultipleEventResponse} from "../../dto/reponse/MultipleEventResponse";
 import {EventResponse} from "../../dto/reponse/EventResponse";
@@ -8,6 +8,7 @@ import {IdResponse} from "../../dto/reponse/IdResponse";
 import {PaginationResponse} from "../../dto/reponse/PaginationResponse";
 import {PaginationParamModel} from "../../model/PaginationParamModel";
 import {ALCOPARTY_URL} from "../../util/EnvUtil";
+import {ErrorDto} from "../../dto/ErrorDto";
 
 export const eventApi = createApi({
     reducerPath: "event",
@@ -22,7 +23,7 @@ export const eventApi = createApi({
 
             return headers
         }
-    }),
+    }) as unknown as BaseQueryFn<string | FetchArgs, unknown, ErrorDto>,
     tagTypes: ["EVENTS", "OWN_EVENTS", "SINGLE_EVENT"],
     endpoints: (build) => ({
         getAllEvents: build.query<PaginationResponse<MultipleEventResponse>, PaginationParamModel>({

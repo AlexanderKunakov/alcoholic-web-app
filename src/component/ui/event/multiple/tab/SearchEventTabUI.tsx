@@ -1,24 +1,35 @@
 import React, {useEffect, useState} from 'react';
-import {Box, Grid} from "@mui/material";
-import EventPreviewUI from "../preview/EventPreviewUI";
 import {TabPanel} from "@mui/lab";
 import {useLazyGetAllEventsQuery} from "../../../../../store/api/EventApi";
 import {PaginationParamModel} from "../../../../../model/PaginationParamModel";
 import LoaderUI from "../../../LoaderUI";
+import ErrorPage from "../../../../../page/ErrorPage";
+import {Box, Grid} from "@mui/material";
+import EventPreviewUI from "../preview/EventPreviewUI";
 import PaginationUI from "../../../util/pagination/PaginationUI";
 
 const SearchEventTabUI = () => {
-    const [isLoading, setIsLoading] = useState<boolean>(true);
-    const [getAllEvents, {data: eventsPageable}] = useLazyGetAllEventsQuery();
+    const [getAllEvents, {data: eventsPageable, isError, isLoading}] = useLazyGetAllEventsQuery();
     const [paginationParam, setPaginationParam] = useState<PaginationParamModel>({page: 0, pageSize: 10});
 
     useEffect(() => {
-        getAllEvents(paginationParam)
-            .finally(() => setIsLoading(false));
+        getAllEvents(paginationParam);
     }, [paginationParam]);
 
+    if (isError) {
+        return (
+            <TabPanel value={"1"}>
+                <ErrorPage/>
+            </TabPanel>
+        );
+    }
+
     if (isLoading || !eventsPageable) {
-        return <LoaderUI/>;
+        return (
+            <TabPanel value={"1"}>
+                <LoaderUI/>;
+            </TabPanel>
+        );
     }
 
     return (

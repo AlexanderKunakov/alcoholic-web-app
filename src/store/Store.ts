@@ -1,5 +1,6 @@
 import {combineReducers, configureStore} from "@reduxjs/toolkit";
 import authReducer from "./reducer/AuthSlice";
+import errorsReducer from "./reducer/ErrorsSlice"
 import {authApi} from "./api/AuthApi";
 import {eventApi} from "./api/EventApi";
 import {userApi} from "./api/UserApi";
@@ -7,6 +8,7 @@ import {invitationLinkApi} from "./api/InvitationLinkApi";
 
 const rootReducer = combineReducers({
     authReducer,
+    errorsReducer,
     [authApi.reducerPath]: authApi.reducer,
     [eventApi.reducerPath]: eventApi.reducer,
     [userApi.reducerPath]: userApi.reducer,

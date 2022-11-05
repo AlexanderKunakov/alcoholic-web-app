@@ -5,7 +5,7 @@ import NewEventTabUI from "./NewEventTabUI";
 import SearchEventTabUI from "./SearchEventTabUI";
 
 const EventMainTabUI = () => {
-    const [tabValue, setTabValue] = useState<number>(1);
+    const [tabValue, setTabValue] = useState<number>(0);
 
     function handleChange(event: React.SyntheticEvent, newValue: number) {
         setTabValue(newValue);

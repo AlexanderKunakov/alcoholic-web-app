@@ -4,7 +4,7 @@ import EventMainTabUI from "../../../component/ui/event/multiple/tab/EventMainTa
 
 const EventsPage = () => {
     return (
-        <Container>
+        <Container sx={{flex: "1 0 auto"}}>
             <EventMainTabUI/>
         </Container>
     );

@@ -1,4 +1,4 @@
-import React, {FC, ReactNode, useState} from 'react';
+import React, {FC, ReactNode, useEffect, useState} from 'react';
 import {TabPanel} from "@mui/lab";
 import {Box, Button, Grid, ImageList, ImageListItem, OutlinedInput, Stack, TextField, Typography} from "@mui/material";
 import {LocalizationProvider} from "@mui/x-date-pickers";
@@ -16,7 +16,7 @@ const NewEventTabUI = () => {
     const navigate = useNavigate();
     const formData = new FormData();
     const [blobs, setBlobs] = useState<Blob[]>([]);
-    const [saveEvent] = usePostEventMutation();
+    const [saveEvent, {error, isSuccess, data: event}] = usePostEventMutation();
     const {control, handleSubmit, formState: {errors}} = useForm<NewEventTabInputs>({
         mode: "all",
         resolver: yupResolver(NewEventTabValidation.schema),
@@ -36,24 +36,21 @@ const NewEventTabUI = () => {
                     alcoholicsIds: data.alcoholicsIds,
                 } as EventEntity)],
                 {type: 'application/json'}));
-        blobs.map(blob => formData.append("images", blob));
-        saveEvent(formData)
-            .then((res) => {
-                //todo FT-37
-                // @ts-ignore
-                const response = res.data;
-                if (response) {
-                    setBlobs([]);
-                    navigate(`/event/${response.id}`, {replace: true});
-                }
-            });
+        blobs.forEach(blob => formData.append("images", blob));
+        saveEvent(formData);
     }
+
+    useEffect(() => {
+        if (isSuccess && event) {
+            navigate(`/event/${event.id}`, {replace: true});
+        }
+    }, [isSuccess]);
 
     function handleImageOnChange(e: React.ChangeEvent<HTMLInputElement>) {
         const files = e.target.files;
         if (files) {
-            for (let i = 0; i < files.length; i++) {
-                const item = files[i];
+            for (const element of files) {
+                const item = element;
                 setBlobs(oldBlobs => [...oldBlobs, new Blob([item], {type: item.type})]);
             }
         }
